@@ -99,8 +99,14 @@ domAsset::registerElement(DAE& dae)
 	mea->setElementType( domExtra::registerElement(dae) );
 	cm->appendChild( mea );
 
-	cm->setMaxOrdinal( 10 );
-	meta->setCMRoot( cm );	
+	mea = new daeMetaElementAttribute( meta, cm, 11, 0, 1 );
+	mea->setName( "description" );
+	mea->setOffset( daeOffsetOf(domAsset,elemDescription) );
+	mea->setElementType( domAsset::domDescription::registerElement(dae) );
+	cm->appendChild( mea );
+
+	cm->setMaxOrdinal(11);
+	meta->setCMRoot(cm);	
 
 	meta->setElementSize(sizeof(domAsset));
 	meta->validate();
@@ -718,6 +724,43 @@ domAsset::domKeywords::registerElement(DAE& dae)
 
 	return meta;
 }
+
+daeElementRef
+domAsset::domDescription::create(DAE& dae)
+{
+	domAsset::domDescriptionRef ref = new domAsset::domDescription(dae);
+	return ref;
+}
+
+
+daeMetaElement *
+domAsset::domDescription::registerElement(DAE& dae)
+{
+	daeMetaElement* meta = dae.getMeta(ID());
+	if ( meta != NULL ) return meta;
+
+	meta = new daeMetaElement(dae);
+	dae.setMeta(ID(), *meta);
+	meta->setName( "description" );
+	meta->registerClass(domAsset::domDescription::create);
+
+	meta->setIsInnerClass( true );
+	//	Add attribute: _value
+	{
+		daeMetaAttribute *ma = new daeMetaAttribute;
+		ma->setName( "_value" );
+		ma->setType( dae.getAtomicTypes().get("xsToken"));
+		ma->setOffset( daeOffsetOf( domAsset::domDescription , _value ));
+		ma->setContainer( meta );
+		meta->appendAttribute(ma);
+	}
+
+	meta->setElementSize(sizeof(domAsset::domDescription));
+	meta->validate();
+
+	return meta;
+}
+
 
 daeElementRef
 domAsset::domModified::create(DAE& dae)

@@ -1194,7 +1194,9 @@ const int
     FLOAT1X4 = 580,
     FX_PROFILE = 581,
     COLLADA = 582,
-    SCENE = 583;
+    SCENE = 583,
+    DESCRIPTION = 584,
+    NAME = 585;
 }
 
 // Returns the total number of schema types/dom* classes
