@@ -99,13 +99,20 @@ domAsset::registerElement(DAE& dae)
 	mea->setElementType( domExtra::registerElement(dae) );
 	cm->appendChild( mea );
 
+
 	mea = new daeMetaElementAttribute( meta, cm, 11, 0, 1 );
+	mea->setName( "name" );
+	mea->setOffset( daeOffsetOf(domAsset,elemName) );
+	mea->setElementType( domAsset::domName::registerElement(dae) );
+	cm->appendChild( mea );
+
+	mea = new daeMetaElementAttribute( meta, cm, 12, 0, 1 );
 	mea->setName( "description" );
 	mea->setOffset( daeOffsetOf(domAsset,elemDescription) );
 	mea->setElementType( domAsset::domDescription::registerElement(dae) );
 	cm->appendChild( mea );
 
-	cm->setMaxOrdinal(11);
+	cm->setMaxOrdinal(12);
 	meta->setCMRoot(cm);	
 
 	meta->setElementSize(sizeof(domAsset));
@@ -724,6 +731,44 @@ domAsset::domKeywords::registerElement(DAE& dae)
 
 	return meta;
 }
+
+daeElementRef
+domAsset::domName::create(DAE& dae)
+{
+	domAsset::domNameRef ref = new domAsset::domName(dae);
+	return ref;
+}
+
+daeMetaElement *
+domAsset::domName::registerElement(DAE& dae)
+{
+	daeMetaElement* meta = dae.getMeta(ID());
+	if ( meta != NULL ) return meta;
+
+	meta = new daeMetaElement(dae);
+	dae.setMeta(ID(), *meta);
+	meta->setName( "name" );
+	meta->registerClass(domAsset::domName::create);
+
+	meta->setIsInnerClass( true );
+	//	Add attribute: _value
+	{
+		daeMetaAttribute *ma = new daeMetaAttribute;
+		ma->setName( "_value" );
+		ma->setType( dae.getAtomicTypes().get("xsToken"));
+		ma->setOffset( daeOffsetOf( domAsset::domName , _value ));
+		ma->setContainer( meta );
+		meta->appendAttribute(ma);
+	}
+
+	meta->setElementSize(sizeof(domAsset::domName));
+	meta->validate();
+
+	return meta;
+}
+
+
+
 
 daeElementRef
 domAsset::domDescription::create(DAE& dae)

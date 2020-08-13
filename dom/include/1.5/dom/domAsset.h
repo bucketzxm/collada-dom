@@ -977,6 +977,66 @@ public:
 		 */
 		static DLLSPEC daeMetaElement* registerElement(DAE& dae);
 	};
+	class domName;
+
+	typedef daeSmartRef<domName> domNameRef;
+	typedef daeTArray<domName> domName_Array;
+
+	/**
+	 * The name element contains name asset.
+	 */
+	class domName : public daeElement
+	{
+	public:
+		virtual COLLADA_TYPE::TypeEnum getElementType() const { return COLLADA_TYPE::NAME; }
+		static daeInt ID() { return 585; }
+		virtual daeInt typeID() const { return ID(); }
+
+
+	public:	//Accessors and Mutators
+		/**
+		 * Gets the value of this element.
+		 * @return Returns a xsToken of the value.
+		 */
+		xsToken getValue() const { return _value; }
+		/**
+		 * Sets the _value of this element.
+		 * @param val The new value for this element.
+		 */
+		void setValue( xsToken val ) { *(daeStringRef*)&_value = val; }
+
+	protected:  // Value
+		/**
+		 * The xsToken value of the text data of this element. 
+		 */
+		xsToken _value;
+	protected:
+		/**
+		 * Constructor
+		 */
+		domName(DAE& dae) : daeElement(dae), _value() {}
+		/**
+		 * Destructor
+		 */
+		virtual ~domName() {}
+		/**
+		 * Overloaded assignment operator
+		 */
+		virtual domName &operator=( const domName &cpy ) { (void)cpy; return *this; }
+
+	public: // STATIC METHODS
+		/**
+		 * Creates an instance of this class and returns a daeElementRef referencing it.
+		 * @return a daeElementRef referencing an instance of this object.
+		 */
+		static DLLSPEC daeElementRef create(DAE& dae);
+		/**
+		 * Creates a daeMetaElement object that describes this element in the meta object reflection framework.
+		 * If a daeMetaElement already exists it will return that instead of creating a new one. 
+		 * @return A daeMetaElement describing this COLLADA element.
+		 */
+		static DLLSPEC daeMetaElement* registerElement(DAE& dae);
+	};
 
 	class domKeywords;
 
@@ -1509,6 +1569,12 @@ protected:  // Elements
  * may appear zero or one time. @see domCreated
  */
 	domCreatedRef elemCreated;
+
+/**
+ * The name element contains a string name. @see domName
+ */
+	domNameRef elemName;
+
 /**
  * The keywords element contains a list of words used as search criteria for
  * the parent element.  There may be only one keywords element. @see domKeywords
@@ -1516,8 +1582,7 @@ protected:  // Elements
 	domKeywordsRef elemKeywords;
 
 /**
- * The description element contains a list of words used as search criteria for
- * the parent element.  There may be only one description element. @see domKeywords
+ * The description element contains string description. @see domDescription
  */
 	domDescriptionRef elemDescription;
 /**
@@ -1579,11 +1644,11 @@ public:	//Accessors and Mutators
 	 */
 	const domCreatedRef getCreated() const { return elemCreated; }
 	/**
-	 * Gets the keywords element.
-	 * @return a daeSmartRef to the keywords element.
+	 * Gets the name element.
+	 * @return a daeSmartRef to the name element.
 	 */
-	// const domNameRef getName() const { return elemName; }
-	
+	const domNameRef getName() const { return elemName; }
+
 	/**
 	 * Gets the keywords element.
 	 * @return a daeSmartRef to the keywords element.
@@ -1639,7 +1704,7 @@ protected:
 	/**
 	 * Constructor
 	 */
-	domAsset(DAE& dae) : daeElement(dae), elemContributor_array(), elemCoverage(), elemCreated(), elemKeywords(), elemDescription(), elemModified(), elemRevision(), elemSubject(), elemTitle(), elemUnit(), elemUp_axis(), elemExtra_array() {}
+	domAsset(DAE& dae) : daeElement(dae), elemContributor_array(), elemCoverage(), elemCreated(), elemName(), elemKeywords(), elemDescription(), elemModified(), elemRevision(), elemSubject(), elemTitle(), elemUnit(), elemUp_axis(), elemExtra_array() {}
 	/**
 	 * Destructor
 	 */
